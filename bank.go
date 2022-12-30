@@ -60,8 +60,8 @@ func (s *BankService) List() (*BankList, error) {
 }
 
 // MatchBVN docs https://paystack.com/docs/identity-verification/verify-bvn-match/
-func (s *BankService) MatchBVN(req *BVNRequest) (*BVNResponse, error) {
-	resp := &BVNResponse{}
+func (s *BankService) MatchBVN(req *BVNRequest) (Response, error) {
+	resp := Response{}
 	err := s.client.Call("POST", "/bvn/match", req, &resp)
 	return resp, err
 }
