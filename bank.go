@@ -66,6 +66,12 @@ func (s *BankService) MatchBVN(req *BVNRequest) (Response, error) {
 	return resp, err
 }
 
+func (s *BankService) MatchBVNNew(req *BVNRequest) (Response, error) {
+	resp := Response{}
+	err := s.client.Call("GET", fmt.Sprintf("/bank/match?account_number=%s&bank_code=%s&bvn=%s", req.AccountNumber, req.BankCode, req.BVN), nil, &resp)
+	return resp, err
+}
+
 // ResolveAccountNumber docs https://developers.paystack.co/v1.0/reference#resolve-account-number
 func (s *BankService) ResolveAccountNumber(accountNumber, bankCode string) (Response, error) {
 	u := fmt.Sprintf("/bank/resolve?account_number=%s&bank_code=%s", accountNumber, bankCode)
