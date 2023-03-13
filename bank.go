@@ -68,7 +68,7 @@ func (s *BankService) MatchBVN(req *BVNRequest) (Response, error) {
 
 func (s *BankService) MatchBVNNew(req *BVNRequest) (Response, error) {
 	resp := Response{}
-	err := s.client.Call("GET", fmt.Sprintf("/bank/match?account_number=%s&bank_code=%s&bvn=%s", req.AccountNumber, req.BankCode, req.BVN), nil, &resp)
+	err := s.client.Call("GET", fmt.Sprintf("/bank/match_bvn?account_number=%s&bank_code=%s&bvn=%s", req.AccountNumber, req.BankCode, req.BVN), nil, &resp)
 	return resp, err
 }
 
