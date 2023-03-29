@@ -11,12 +11,12 @@ type BankAccountService service
 
 // BankAccountRequest represents a request to create a bank account.
 type BankAccountRequest struct {
-	Email         string  `json:"email,omitempty"`
-	FirstName     float32 `json:"first_name,omitempty"`
-	LastName      string  `json:"last_name,omitempty"`
-	Phone         string  `json:"phone,omitempty"`
-	PreferredBank string  `json:"preferred_bank,omitempty"`
-	Country       string  `json:"country,omitempty"`
+	Email         string `json:"email,omitempty"`
+	FirstName     string `json:"first_name,omitempty"`
+	LastName      string `json:"last_name,omitempty"`
+	Phone         string `json:"phone,omitempty"`
+	PreferredBank string `json:"preferred_bank,omitempty"`
+	Country       string `json:"country,omitempty"`
 }
 
 // BankAccount is the resource representing your Paystack transfer.
