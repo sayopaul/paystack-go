@@ -126,6 +126,7 @@ func NewClient(key string, httpClient *http.Client) *Client {
 	c.Transfer = (*TransferService)(&c.common)
 	c.Charge = (*ChargeService)(&c.common)
 	c.Bank = (*BankService)(&c.common)
+	c.BankAccount = (*BankAccountService)(&c.common)
 	c.BulkCharge = (*BulkChargeService)(&c.common)
 
 	return c
