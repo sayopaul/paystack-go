@@ -50,6 +50,7 @@ type Client struct {
 	// Miscellaneous actions are directly implemented on the Client object
 	Customer     *CustomerService
 	Transaction  *TransactionService
+	Refund       *RefundService
 	SubAccount   *SubAccountService
 	Plan         *PlanService
 	Subscription *SubscriptionService
