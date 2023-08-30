@@ -178,6 +178,52 @@ func (c *Client) Call(method, path string, body, v interface{}) error {
 	return c.decodeResponse(resp, v)
 }
 
+// Call actually does the HTTP request to Paystack API
+func (c *Client) CallSimple(method, path string, body, v interface{}) error {
+	var buf io.ReadWriter
+	if body != nil {
+		buf = new(bytes.Buffer)
+		err := json.NewEncoder(buf).Encode(body)
+		if err != nil {
+			return err
+		}
+	}
+	u, _ := c.baseURL.Parse(path)
+	req, err := http.NewRequest(method, u.String(), buf)
+
+	if err != nil {
+		if c.LoggingEnabled {
+			c.Log.Printf("Cannot create Paystack request: %v\n", err)
+		}
+		return err
+	}
+
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	req.Header.Set("Authorization", "Bearer "+c.key)
+	req.Header.Set("User-Agent", userAgent)
+
+	if c.LoggingEnabled {
+		c.Log.Printf("Requesting %v %v%v\n", req.Method, req.URL.Host, req.URL.Path)
+		c.Log.Printf("POST request data %v\n", buf)
+	}
+
+	start := time.Now()
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if c.LoggingEnabled {
+		c.Log.Printf("Completed in %v\n", time.Since(start))
+	}
+
+	defer resp.Body.Close()
+	return c.decodeResponseSimple(resp, v)
+}
+
 // ResolveCardBIN docs https://developers.paystack.co/v1.0/reference#resolve-card-bin
 func (c *Client) ResolveCardBIN(bin int) (Response, error) {
 	u := fmt.Sprintf("/decision/bin/%d", bin)
@@ -272,4 +318,30 @@ func (c *Client) decodeResponse(httpResp *http.Response, v interface{}) error {
 	}
 	// if response data does not contain data key, map entire response to v
 	return mapstruct(resp, v)
+}
+
+func (c *Client) decodeResponseSimple(httpResp *http.Response, v interface{}) error {
+	respBody, err := io.ReadAll(httpResp.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(respBody, v)
+	if err != nil {
+		return err
+	}
+	c.Log.Printf("The decoded response is %v :", v)
+	if httpResp.StatusCode >= 400 {
+		if c.LoggingEnabled {
+			c.Log.Printf("Paystack error: %+v", err)
+			c.Log.Printf("HTTP Response: %+v", v)
+		}
+		return newAPIError(httpResp)
+	}
+
+	if c.LoggingEnabled {
+		c.Log.Printf("Paystack response: %v\n", v)
+	}
+
+	// if response data does not contain data key, map entire response to v
+	return nil
 }

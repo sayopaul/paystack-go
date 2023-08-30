@@ -190,7 +190,7 @@ func (s *TransactionService) Get(id int) (*Transaction, error) {
 // For more details see https://developers.paystack.co/v1.0/reference#charge-authorization
 func (s *TransactionService) ChargeAuthorization(req *TransactionRequest) (*ChargeAuthorization, error) {
 	txn := &ChargeAuthorization{}
-	err := s.client.Call("POST", "/transaction/charge_authorization", req, txn)
+	err := s.client.CallSimple("POST", "/transaction/charge_authorization", req, txn)
 	return txn, err
 }
 
